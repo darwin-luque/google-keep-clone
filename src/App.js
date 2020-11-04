@@ -10,21 +10,20 @@ import randomKeyGenerator from './utils/RandomKeyGenerator/randomKeyGenerator';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
+  const [isCreate, setIsCreate] = useState(false);
 
-  const addItem = (event) => {
-    event.preventDefault();
-    const [title, content] = event.target;
+  const addItem = (title, content, event) => {
     const newNote = {
       key: randomKeyGenerator(8),
-      title: title.value,
-      content: content.value,
+      title: title,
+      content: content,
     };
-    event.target[0].value = '';
-    event.target[1].value = '';
     setNotes([
       ...notes,
       newNote
     ]);
+    setIsCreate(false);
+    event.target.parentNode.parentNode.parentNode.childNodes[2].value = '';
   };
 
   const deleteItem = key => {
@@ -32,10 +31,14 @@ const App = () => {
     setNotes(copyNotes);
   }
 
+  const createNoteHandler = () => {
+    setIsCreate(true)
+  }
+
   return (
     <div className="App">
       <Header />
-      <CreateArea addItem={addItem} />
+      <CreateArea addItem={addItem} createNote={isCreate} click={createNoteHandler} />
       {notes.map(note => <Note key={note.key} title={note.title} content={note.content} deleteItem={() => deleteItem(note.key)} />)}
       <Footer />
     </div>
